@@ -1,0 +1,151 @@
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7fc;
+  color: #333;
+}
+
+h1, h2, h3 {
+  font-family: 'Helvetica', sans-serif;
+  font-weight: 600;
+}
+
+.App {
+  text-align: center;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Upload Form Styles */
+.upload-form {
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.upload-form h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.upload-form label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.upload-form input[type="file"],
+.upload-form textarea,
+.upload-form button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.upload-form input[type="file"] {
+  padding: 10px;
+}
+
+.upload-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.upload-form button {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.upload-form button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.upload-form button:hover {
+  background-color: #45a049;
+}
+
+.upload-form .error {
+  color: #e74c3c;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Feedback Section */
+.feedback {
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 40px;
+  text-align: left;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feedback h3 {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.feedback p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.feedback ul {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.feedback li {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.feedback li::before {
+  content: "✓";
+  color: green;
+  margin-right: 10px;
+}
+
+.feedback li.missing::before {
+  content: "✗";
+  color: red;
+}
+
+.feedback .category-scores {
+  margin-top: 20px;
+}
+
+.feedback .category-scores li {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Loading State */
+.loading {
+  font-size: 18px;
+  color: #3498db;
+  font-weight: 500;
+}
+
