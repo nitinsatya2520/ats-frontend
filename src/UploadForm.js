@@ -44,7 +44,7 @@ const UploadForm = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/analyze",
+        "https://ats-backend-r6gx.onrender.com/analyze",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
