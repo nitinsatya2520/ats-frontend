@@ -48,7 +48,7 @@ const UploadForm = () => {
 
   return (
     <div className="upload-form">
-      <h2>ATS Resume Checker</h2>
+      <h2>ATS Checker</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Upload Resume (PDF):</label>
