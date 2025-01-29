@@ -14,11 +14,20 @@ const UploadForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fileInputRef = useRef(null); // Create a reference for the file input
+  const fileInputRef = useRef(null);
+
+  // Allowed file types
+  const allowedFileTypes = ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.size > 2 * 1024 * 1024) {
+    if (!file) return;
+
+    if (!allowedFileTypes.includes(file.type)) {
+      setError("Invalid file type. Please upload a PDF or DOCX.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
       setError("File size should be under 2MB.");
       return;
     }
@@ -33,12 +42,17 @@ const UploadForm = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file && file.type === "application/pdf" && file.size <= 2 * 1024 * 1024) {
-      setResume(file);
-      setError(null);
-    } else {
-      setError("Invalid file. Please upload a PDF under 2MB.");
+
+    if (!allowedFileTypes.includes(file.type)) {
+      setError("Invalid file type. Please upload a PDF or DOCX.");
+      return;
     }
+    if (file.size > 2 * 1024 * 1024) {
+      setError("File size should be under 2MB.");
+      return;
+    }
+    setResume(file);
+    setError(null);
   };
 
   const handleDragOver = (e) => {
@@ -63,19 +77,16 @@ const UploadForm = () => {
       const response = await axios.post(
         "https://ats-backend-r6gx.onrender.com/analyze",
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       setFeedback(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || "Error analyzing the resume.");
+      setError(err.response?.data?.error || "Error analyzing the resume.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Trigger file input click when drop zone is clicked
   const handleDropZoneClick = () => {
     fileInputRef.current.click();
   };
@@ -95,27 +106,23 @@ const UploadForm = () => {
   return (
     <div className="upload-form">
       <h2>ATS Resume Checker</h2>
-      
+
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Upload Resume (PDF):</label>
+          <label>Upload Resume (PDF or DOCX):</label>
           <div
             className="drop-zone"
             onDrop={handleDrop}
             onDragOver={handleDragOver}
-            onClick={handleDropZoneClick} // Trigger file input on click
+            onClick={handleDropZoneClick}
           >
-            {resume ? (
-              <p>File: {resume.name}</p>
-            ) : (
-              <p>Drag and drop a PDF file here or click to select</p>
-            )}
+            {resume ? <p>File: {resume.name}</p> : <p>Drag & drop or click to upload</p>}
             <input
               type="file"
               onChange={handleFileChange}
-              accept=".pdf"
+              accept=".pdf, .docx"
               style={{ display: "none" }}
-              ref={fileInputRef} // Assign ref to the input
+              ref={fileInputRef}
             />
           </div>
         </div>
@@ -139,25 +146,22 @@ const UploadForm = () => {
         </div>
       )}
 
-      {error && <p className="error">{error}</p>}
+      {error && <p className="error" aria-live="polite">{error}</p>}
 
       {feedback && (
         <div className="feedback">
           <h3>Analysis Results</h3>
 
-          {/* Circular Graph for Overall Score */}
           <div className="chart-container">
             <Doughnut data={getChartData(feedback.overall_score)} />
             <p className="score-text">{feedback.overall_score}%</p>
           </div>
 
           <p>
-            <strong>Matched Keywords:</strong>{" "}
-            {feedback.matched_keywords?.join(", ") || "None"}
+            <strong>Matched Keywords:</strong> {feedback.matched_keywords?.join(", ") || "None"}
           </p>
           <p>
-            <strong>Missing Keywords:</strong>{" "}
-            {feedback.missing_keywords?.join(", ") || "None"}
+            <strong>Missing Keywords:</strong> {feedback.missing_keywords?.join(", ") || "None"}
           </p>
 
           {feedback.category_scores && (
