@@ -11,9 +11,7 @@ function App() {
           <img src={logo} alt="KNS ATS Checker Logo" className="logo" />
           <div className="title-container">
             <h1 className="app-title">KNS ATS Checker</h1>
-            <p className="app-description">
-              Analyze resumes for jobs with advanced ATS matching technology.
-            </p>
+            
           </div>
         </div>
       </header>
@@ -22,7 +20,9 @@ function App() {
       </main>
       <footer className="App-footer">
         <p>&copy; 2025 KNS Technologies. All rights reserved.</p>
-        
+        <p>
+              Analyze resumes for jobs with advanced ATS matching technology.
+            </p>
       </footer>
     </div>
   );

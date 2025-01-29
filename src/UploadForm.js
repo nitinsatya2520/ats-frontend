@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
@@ -14,6 +14,8 @@ const UploadForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const fileInputRef = useRef(null); // Create a reference for the file input
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.size > 2 * 1024 * 1024) {
@@ -26,6 +28,21 @@ const UploadForm = () => {
 
   const handleJobDescriptionChange = (e) => {
     setJobDescription(e.target.value);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === "application/pdf" && file.size <= 2 * 1024 * 1024) {
+      setResume(file);
+      setError(null);
+    } else {
+      setError("Invalid file. Please upload a PDF under 2MB.");
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   const handleSubmit = async (e) => {
@@ -58,6 +75,11 @@ const UploadForm = () => {
     }
   };
 
+  // Trigger file input click when drop zone is clicked
+  const handleDropZoneClick = () => {
+    fileInputRef.current.click();
+  };
+
   // Generate data for Doughnut chart
   const getChartData = (score) => ({
     labels: ["Score", "Remaining"],
@@ -73,10 +95,29 @@ const UploadForm = () => {
   return (
     <div className="upload-form">
       <h2>ATS Resume Checker</h2>
+      
       <form onSubmit={handleSubmit}>
         <div>
           <label>Upload Resume (PDF):</label>
-          <input type="file" onChange={handleFileChange} accept=".pdf" />
+          <div
+            className="drop-zone"
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            onClick={handleDropZoneClick} // Trigger file input on click
+          >
+            {resume ? (
+              <p>File: {resume.name}</p>
+            ) : (
+              <p>Drag and drop a PDF file here or click to select</p>
+            )}
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept=".pdf"
+              style={{ display: "none" }}
+              ref={fileInputRef} // Assign ref to the input
+            />
+          </div>
         </div>
         <div>
           <label>Job Description:</label>
@@ -91,6 +132,12 @@ const UploadForm = () => {
           {loading ? "Analyzing..." : "Analyze"}
         </button>
       </form>
+
+      {loading && (
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+        </div>
+      )}
 
       {error && <p className="error">{error}</p>}
 
@@ -119,7 +166,7 @@ const UploadForm = () => {
               <ul>
                 {Object.entries(feedback.category_scores).map(
                   ([category, score]) => (
-                    <li key={category}>
+                    <li key={category} className={score >= 80 ? "high-score" : "low-score"}>
                       {category}: {score}%
                     </li>
                   )
